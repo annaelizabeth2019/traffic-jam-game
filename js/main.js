@@ -43,7 +43,7 @@ ctx.strokeRect(0, 0, 600, 600);
 ctx.strokeStyle = "pink";
 ctx.lineWidth = 1;
 ctx.beginPath();
-ctx.moveTo(0%, 100);
+ctx.moveTo(0, 100);
 ctx.lineTo(600, 100);
 ctx.moveTo(0, 200);
 ctx.lineTo(600, 200);
