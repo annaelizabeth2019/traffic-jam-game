@@ -1,0 +1,20 @@
+body {
+    background: skyblue;
+    color: yellow;
+    margin: 0;
+    text-align: center;
+}
+
+#canvas {
+    background: white;
+    margin: 0 auto;
+}
+
+#frontCanvas {
+    position: absolute;
+    margin: 0 auto;
+}
+
+.boardWrapper {
+    text-align: center;
+}
