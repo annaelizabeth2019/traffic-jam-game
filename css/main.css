@@ -8,12 +8,12 @@ body {
 #canvas {
     background: white;
     margin: 0 auto;
+    border: 1px solid black;
 }
 
 #frontCanvas {
     position: absolute;
     border: 1px solid black;
-    background: blue;
 }
 
 .boardWrapper {
