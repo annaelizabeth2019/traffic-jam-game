@@ -34,7 +34,7 @@ const CANVAS_HEIGHT = frontCanvas.height;
 let dragging = false;
 let mouseX, mouseY;
 
-let redCar, car1, car2, car3, car4, car5, car6, car7, car8, car9, bus1, bus2;
+let redCar, car1, car2, car3, car4, car5, car6, car7, car8, car9, bus1, bus2, selectedCar;
 
 let cars = [];
 
@@ -53,32 +53,15 @@ class Car {
         //saves the current state of the canvas code
         fctx.save();
         //clear
-        //draw
+        //draw cars
         fctx.fillStyle = "violet";
         fctx.fillRect(this.x + this.padding, this.y + this.padding, this.width, this.height);
         fctx.strokeStyle = "black";
         fctx.strokeRect(this.x + this.padding, this.y + this.padding, this.width, this.height);        
-        //restores
-        fctx.restore();
-        
-    // if(dragging){
-        //     x=mouseX-size/2;
-        //     y=mouseY-size/2;
-        // }
-            
-    // function doMouseMove(event){
-    //     mouseX = event.pageX-canvas.offsetLeft;
-    //     mouseY = event.pageY-canvas.offsetTop;
-    //     console.log("x:"+mouseX+", y:"+mouseY);
-    // }
-                
-            }
-            clickEvent () {
-                
-            }
-            
-            //do I need update() in car class? (I think I do)
-        };
+        //restore cars
+        fctx.restore();    
+    }
+};
         
 function init(){
             
@@ -111,6 +94,8 @@ function selectCar() {
         var c = cars[i];
         if (mouseX >= c.x && mouseX < c.x + c.width && mouseY >= c.y && mouseY < c.y + c.height){
             c.isSelected = true;
+            // selectedCar.detectCollision()
+
         } else {
             c.isSelected = false;
         }
@@ -122,12 +107,30 @@ function mouseTrack(evt) {
     mouseX = evt.clientX - rect.left;
     mouseY = evt.clientY - rect.top;   
     
+    //drag the cars
     for (let i = 0; i < cars.length; i++){
         var c = cars[i];
+        if (dragging === true && isSelected) {
+            
+        };
+        //horizontally-aligned car logic
         if (dragging === true && c.isSelected && c.position === 'h') {
             c.x = mouseX - c.width/2;
+            //collision detection on the canvas
+            if (c.x < 0){
+                c.x =0;
+            } else if (c.x + c.width > 600) {
+                c.x = 580 - c.width;
+            };
+            //vertically aligned car logic
         } else if (dragging === true && c.isSelected && c.position === 'v'){
             c.y = mouseY - c.height/2;
+            //collision detection on the y-axis of the canvas
+            if (c.y < 0){
+                c.y = 0;
+            } else if (c.y + c.height > 600) {
+                c.y = 580 - c.height;
+            };
         }
     }
 };
@@ -149,7 +152,7 @@ function animate() {
     if (x + 90 > CANVAS_WIDTH || x < 0) {
         dx = 0;
     }
-    // mouseX += dx;
+    // detectCollision();
     update();
     
 };
@@ -211,37 +214,22 @@ function createGrid() {
 
 function update() {
     fctx.clearRect(0, 0, 600, 600)
-
+//draw the cars 
     for (i = 0; i < cars.length; i++){
         cars[i].draw()
     };
-
-    // redCar.draw();
-    // car1.draw();
-    // car2.draw();
-    // car3.draw();
-    // car4.draw();
-    // car5.draw();
-    // car6.draw();
-    // car7.draw();
-    // car8.draw();
-    // car9.draw();
-    // bus1.draw();
-    // bus2.draw();
     requestAnimationFrame(update);
 
 //some logic for collision detection
-    // if (this.position.x < 0) {
-    //     this.position = 0;
+    // if (c.position.x < 0) {
+    //     c.position = 0;
     // };
-    // if (this.position.x + this.width > CANVAS_WIDTH) {
-    //     this.position = 0;
+    // if (c.position.x + c.width > CANVAS_WIDTH) {
+    //     c.position = 0;
     // }
 
     // };
     // requestAnimationFrame();
 };
-
-// animate()
 
 init();
