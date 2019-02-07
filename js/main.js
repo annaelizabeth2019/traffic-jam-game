@@ -37,9 +37,10 @@ let mouseX, mouseY;
 let redCar, car1, car2, car3, car4, car5, car6, car7, car8, car9, bus1, bus2, selectedCar;
 
 let cars = [];
+let allOtherCars = [];
 
 class Car {
-    constructor(originX, originY, carWidth, carHeight, orientation){
+    constructor(originX, originY, carWidth, carHeight, orientation, color){
         this.width = carWidth;
         this.height = carHeight;
         this.x = originX;
@@ -47,6 +48,7 @@ class Car {
         this.padding = 10;
         this.isSelected = false;
         this.position = orientation;
+        this.color = color;
     }
     
     draw(){
@@ -54,15 +56,19 @@ class Car {
         fctx.save();
         //clear
         //draw cars
-        fctx.fillStyle = "violet";
+        fctx.fillStyle = this.color;
         fctx.fillRect(this.x + this.padding, this.y + this.padding, this.width, this.height);
         fctx.strokeStyle = "black";
         fctx.strokeRect(this.x + this.padding, this.y + this.padding, this.width, this.height);        
         //restore cars
         fctx.restore();    
     }
+    get topSide() {return this.y};
+    get leftSide() {return this.x};
+    get bottomSide() {return this.x + this.width};
+    get topSide() {return this.y + this.height};
 };
-        
+
 function init(){
             
     /*----- event listeners -----*/ 
@@ -81,11 +87,6 @@ function init(){
     
 };
 
-
-/*----- cached element references -----*/ 
-
-
-
 /*----- functions -----*/
 
 function selectCar() {
@@ -94,8 +95,6 @@ function selectCar() {
         var c = cars[i];
         if (mouseX >= c.x && mouseX < c.x + c.width && mouseY >= c.y && mouseY < c.y + c.height){
             c.isSelected = true;
-            // selectedCar.detectCollision()
-
         } else {
             c.isSelected = false;
         }
@@ -104,17 +103,19 @@ function selectCar() {
 
 function mouseTrack(evt) {
     let rect = frontCanvas.getBoundingClientRect();
+    //find the position of the mouse
     mouseX = evt.clientX - rect.left;
     mouseY = evt.clientY - rect.top;   
-    
     //drag the cars
+    allOtherCars = cars.slice();
+    carCollision();
     for (let i = 0; i < cars.length; i++){
         var c = cars[i];
-        if (dragging === true && isSelected) {
-            
+        if (dragging && c.isSelected) {
+            carCollision();
         };
         //horizontally-aligned car logic
-        if (dragging === true && c.isSelected && c.position === 'h') {
+        if (dragging && c.isSelected && c.position === 'h') {
             c.x = mouseX - c.width/2;
             //collision detection on the canvas
             if (c.x < 0){
@@ -123,7 +124,7 @@ function mouseTrack(evt) {
                 c.x = 580 - c.width;
             };
             //vertically aligned car logic
-        } else if (dragging === true && c.isSelected && c.position === 'v'){
+        } else if (dragging && c.isSelected && c.position === 'v'){
             c.y = mouseY - c.height/2;
             //collision detection on the y-axis of the canvas
             if (c.y < 0){
@@ -143,35 +144,30 @@ function releaseCar(){
     }
 };
 
-function render() {
-    // console.log('render is ready');
-};
-
 function animate() {
     requestAnimationFrame(animate);
     if (x + 90 > CANVAS_WIDTH || x < 0) {
         dx = 0;
     }
     // detectCollision();
-    update();
-    
+    update();   
 };
 
 function createCars() {
     // cars and originX, origin Y, height, width
     cars = [
-        redCar = new Car(0, 200, 180, 80, 'h'),
-        car1 = new Car(0, 300, 180, 80, 'h'),
-        car2 = new Car(100, 400, 80, 180, 'v'),
-        car3 = new Car(0, 400, 80, 180, 'v'),
-        car4 = new Car(200, 400, 180, 80, 'h'),
-        car5 = new Car(200, 500, 180, 80, 'h'),
-        car6 = new Car(200, 200, 80, 180, 'v'),
-        car7 = new Car(200, 0, 80, 180, 'v'),
-        car8 = new Car(300, 100, 80, 180, 'v'),
-        car9 = new Car(300, 300, 180, 80, 'h'),
-        bus1 = new Car(300, 0, 280, 80, 'h'),
-        bus2 = new Car(500, 200, 80, 280, 'v')
+        redCar = new Car(0, 200, 180, 80, 'h', 'red'),
+        car1 = new Car(0, 300, 180, 80, 'h', 'lightgreen'),
+        car2 = new Car(100, 400, 80, 180, 'v', 'darkblue'),
+        car3 = new Car(0, 400, 80, 180, 'v', 'gold'),
+        car4 = new Car(200, 400, 180, 80, 'h', 'purple'),
+        car5 = new Car(200, 500, 180, 80, 'h', 'grey'),
+        car6 = new Car(200, 200, 80, 180, 'v', 'cream'),
+        car7 = new Car(200, 0, 80, 180, 'v', 'silver'),
+        car8 = new Car(300, 100, 80, 180, 'v', 'blue'),
+        car9 = new Car(300, 300, 180, 80, 'h', 'orange'),
+        bus1 = new Car(300, 0, 280, 80, 'h', 'yellow'),
+        bus2 = new Car(500, 200, 80, 280, 'v', 'scarlet')
     ];
 
 };
@@ -212,14 +208,14 @@ function createGrid() {
 
 };
 
+//renders the game 
 function update() {
     fctx.clearRect(0, 0, 600, 600)
-//draw the cars 
+    //draw the cars 
     for (i = 0; i < cars.length; i++){
         cars[i].draw()
     };
     requestAnimationFrame(update);
-
 //some logic for collision detection
     // if (c.position.x < 0) {
     //     c.position = 0;
@@ -231,5 +227,20 @@ function update() {
     // };
     // requestAnimationFrame();
 };
+
+function carCollision() {
+    for (let i = 0; i < cars.length; i++){
+        let j = 0; j < allOtherCars.length; j++;
+        var c = cars[i];
+        if (dragging ===true && c.isSelected === true){
+        allOtherCars.splice(c, 1);
+        if(c.rightSide > allOtherCars[j].leftSide && c.leftSide < allOtherCars[j].rightSide && c.bottomSide > allOtherCars[j].topSide && c.topSide < allOtherCars[j].bottomSide){
+        console.log('collision detected')
+        }
+    }
+    }
+};
+
+area = 
 
 init();
