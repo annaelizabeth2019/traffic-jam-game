@@ -1,21 +1,56 @@
 body {
-    background: skyblue;
-    color: yellow;
+    background: #BCD6F3;
+    color: #170931;
     margin: 0;
     text-align: center;
+    background-image: url("https://i.pinimg.com/originals/06/0b/1f/060b1f5585c9e45cded88d0b7ac3fad6.jpg");
+}
+.game-wrapper {
+    display: grid;
+    grid-template-columns: 20% 80%;
+    grid-template-areas: "aside game";
+    margin-top: 20px;
+}
+
+aside {
+    grid-area: aside;
+    background-color: #2162AD;
+    color: #FFAA00;
+    padding: 5px;
+    height: 400px;
+    margin-top: 10px;
+}
+
+header {
+    margin: 0 auto;
+    background: #BCD6F3;
+    padding: 5px;
+    width: 600px;
+    margin-top: 20px;
+
+}
+
+h1 {
+    font-weight: 800;
+}
+
+h2 {
+    color: #2162AD;
+    font-size: 18px;
 }
 
 #canvas {
-    background: white;
+    background: #170931;
     margin: 0 auto;
-    border: 1px solid black;
+    border: 5px solid #FFAA00;
 }
 
 #frontCanvas {
     position: absolute;
-    border: 1px solid black;
+    
 }
 
 .boardWrapper {
     text-align: center;
+    grid-area: game;
 }

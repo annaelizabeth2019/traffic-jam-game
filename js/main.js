@@ -34,7 +34,7 @@ const CANVAS_HEIGHT = frontCanvas.height;
 let dragging = false;
 let mouseX, mouseY;
 
-let redCar, car1, car2, car3, car4, car5, car6, car7, car8, car9, bus1, bus2, selectedCar;
+let redCar, car1, car2, car3, car4, car5, car6, car7, car8, car9, bus1, bus2;
 
 let cars = [];
 let allOtherCars = [];
@@ -49,6 +49,36 @@ class Car {
         this.isSelected = false;
         this.position = orientation;
         this.color = color;
+        this.isColliding = false;
+    }
+
+    mouseDetection() {
+        if (dragging === true){
+            if (mouseX >= this.x && 
+                mouseX < this.x + this.width && 
+                mouseY >= this.y && 
+                mouseY < this.y + this.height){
+                this.isSelected = true;
+            } else {
+                this.isSelected = false;
+            }
+        }
+    }
+
+    collisionDetection() {
+        if (this.isSelected === true){
+            for (let i = 0; i < cars.length; i++) {
+                if(this.x < cars[i].x + cars[i].width ||
+                    this.x + this.width > cars[i].x ||
+                    this.y < cars[i].y + cars[i].height ||
+                    this.y + this.height > cars[i].y)
+                    {
+                this.isColliding = true;
+                } else {
+                    this.isColliding = false;
+                }
+            }
+        }
     }
     
     draw(){
@@ -78,9 +108,10 @@ function init(){
     document.addEventListener('mouseup', releaseCar);
             
     /*---- make the game board and cars ----*/
+
     createGrid();
     createCars(); 
-    
+
     /*--- Starts the update loop ----*/
     
     requestAnimationFrame(update);
@@ -92,12 +123,7 @@ function init(){
 function selectCar() {
     dragging = true;
     for (let i = 0; i < cars.length; i++){
-        var c = cars[i];
-        if (mouseX >= c.x && mouseX < c.x + c.width && mouseY >= c.y && mouseY < c.y + c.height){
-            c.isSelected = true;
-        } else {
-            c.isSelected = false;
-        }
+        cars[i].mouseDetection();
     }
 };
 
@@ -107,13 +133,8 @@ function mouseTrack(evt) {
     mouseX = evt.clientX - rect.left;
     mouseY = evt.clientY - rect.top;   
     //drag the cars
-    allOtherCars = cars.slice();
-    carCollision();
     for (let i = 0; i < cars.length; i++){
         var c = cars[i];
-        if (dragging && c.isSelected) {
-            carCollision();
-        };
         //horizontally-aligned car logic
         if (dragging && c.isSelected && c.position === 'h') {
             c.x = mouseX - c.width/2;
@@ -132,6 +153,14 @@ function mouseTrack(evt) {
             } else if (c.y + c.height > 600) {
                 c.y = 580 - c.height;
             };
+        }
+    }
+    if(dragging){
+        for (let i = 0; i < cars.length; i++){
+        cars[i].collisionDetection();
+            if (cars[i].isColliding === true){
+            console.log('collision');
+            }
         }
     }
 };
@@ -156,18 +185,18 @@ function animate() {
 function createCars() {
     // cars and originX, origin Y, height, width
     cars = [
-        redCar = new Car(0, 200, 180, 80, 'h', 'red'),
-        car1 = new Car(0, 300, 180, 80, 'h', 'lightgreen'),
-        car2 = new Car(100, 400, 80, 180, 'v', 'darkblue'),
-        car3 = new Car(0, 400, 80, 180, 'v', 'gold'),
-        car4 = new Car(200, 400, 180, 80, 'h', 'purple'),
-        car5 = new Car(200, 500, 180, 80, 'h', 'grey'),
-        car6 = new Car(200, 200, 80, 180, 'v', 'cream'),
-        car7 = new Car(200, 0, 80, 180, 'v', 'silver'),
-        car8 = new Car(300, 100, 80, 180, 'v', 'blue'),
-        car9 = new Car(300, 300, 180, 80, 'h', 'orange'),
-        bus1 = new Car(300, 0, 280, 80, 'h', 'yellow'),
-        bus2 = new Car(500, 200, 80, 280, 'v', 'scarlet')
+        redCar = new Car(0, 200, 180, 80, 'h', '#fa3901'),
+        car1 = new Car(0, 300, 180, 80, 'h', '#BCD6F3'),
+        car2 = new Car(100, 400, 80, 180, 'v', '#2162AD'),
+        car3 = new Car(0, 400, 80, 180, 'v', '#F1A204'),
+        car4 = new Car(200, 400, 180, 80, 'h', '#5316BD'),
+        car5 = new Car(200, 500, 180, 80, 'h', '#7f7f61'),
+        car6 = new Car(200, 200, 80, 180, 'v', '#b26a4e'),
+        car7 = new Car(200, 0, 80, 180, 'v', '#5316BD'),
+        car8 = new Car(300, 100, 80, 180, 'v', ' #e19417'),
+        car9 = new Car(300, 300, 180, 80, 'h', '#6b2ba1'),
+        bus1 = new Car(300, 0, 280, 80, 'h', '#f7cc30'),
+        bus2 = new Car(500, 200, 80, 280, 'v', '#f7cc30')
     ];
 
 };
@@ -176,7 +205,7 @@ function createGrid() {
     ctx.strokeRect(0, 0, 600, 600);
     
     //rows
-    ctx.strokeStyle = "pink";
+    ctx.strokeStyle = "#FFAA00";
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(0, 100);
@@ -216,6 +245,7 @@ function update() {
         cars[i].draw()
     };
     requestAnimationFrame(update);
+
 //some logic for collision detection
     // if (c.position.x < 0) {
     //     c.position = 0;
@@ -228,19 +258,14 @@ function update() {
     // requestAnimationFrame();
 };
 
-function carCollision() {
-    for (let i = 0; i < cars.length; i++){
-        let j = 0; j < allOtherCars.length; j++;
-        var c = cars[i];
-        if (dragging ===true && c.isSelected === true){
-        allOtherCars.splice(c, 1);
-        if(c.rightSide > allOtherCars[j].leftSide && c.leftSide < allOtherCars[j].rightSide && c.bottomSide > allOtherCars[j].topSide && c.topSide < allOtherCars[j].bottomSide){
-        console.log('collision detected')
-        }
-    }
-    }
-};
-
-area = 
+// function carCollision() {
+//     for (let i = 0; i < cars.length; i++){
+//         if (cars[i].isSelected === true) {
+//             if(cars[i].rightSide > this.leftSide || cars[i].leftSide < this.rightSide || cars[i].bottomSide > this.topSide || cars[i].topSide < this.bottomSide){
+//         console.log('collision detected')
+//         }
+//         }
+//     }
+// };
 
 init();
