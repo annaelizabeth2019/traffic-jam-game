@@ -1,22 +1,44 @@
-//1. Render a board, blocks, a red block and an "escape" point in front of red car. 
-    // establish render method for cars
-    //once render() format is known, put update function into requestAnimationFrame()
-    // draw() is in update() is in requestAnimation
-    //call requestAnimationFrame inside of init()
-    //call requestAnimationFrame 2x: in init to know the origin points, and when on a loop. 
-//Traffic Jam
-//2. Blocks can be move on x and y axis
-    //figure out where the mouse is and how far it has traveled
-    //How to get area of cars?
-    //if mouse's x is > car's x + width (ish?)
-//3. Blocks can be dragged by mouse 
-    // figure out and know when the mouse is inside of a car
-    //
-//4. The game is winnable: player can get the red car to the escape point and know they won
-//5. The game runs a timer?
-//6. The game counts moves. 
-//7. The game includes at least one level, but potentially can include more levels that can be easily rendered
-//8. The game lets the player know when they have won!
+//a timer
+const clockFace = document.querySelector("#timer");
+clockFace.innerHTML = "00:00:00";
+
+this.session = true; //set true if timer has not started
+
+var seconds = 0; //used var to make seconds available to all functions
+const pad = val => (val > 9 ? val : "0" + val); //the padding function to add zeros to single digits
+
+//starter function
+let start = () => {
+  if (this.session === true) {
+    this.set_time = setInterval(() => {
+      seconds++;
+      clockFace.innerHTML = `${pad(Math.trunc(seconds / 3600))}:${pad(
+        Math.trunc(seconds / 60) % 60
+      )}:${pad(seconds % 60)}`;
+    }, 1000);
+
+    this.session = false; //timer has started
+  }
+};
+
+//pause function
+let pause = () => {
+  clearInterval(this.set_time);
+  this.session = true; //true because timer has been paused
+};
+
+//the resume function
+let cont = () => {
+  start();
+  this.session = false; //timer resumed
+};
+
+//the stop function
+let stop = () => {
+  clearInterval(this.set_time);
+  seconds = 0; //restart timer
+  this.session = true;
+};
 
 
 /*----- constants -----*/ 
@@ -33,12 +55,11 @@ const CANVAS_HEIGHT = frontCanvas.height;
 //dragging detection
 let dragging = false;
 let mouseX, mouseY;
-
+//variables for cars
 let redCar, car1, car2, car3, car4, car5, car6, car7, car8, car9, bus1, bus2;
-
+//this array holds the cars
 let cars = [];
-let allOtherCars = [];
-
+//Car class holds information about each car
 class Car {
     constructor(originX, originY, carWidth, carHeight, orientation, color){
         this.width = carWidth;
@@ -51,7 +72,7 @@ class Car {
         this.color = color;
         this.isColliding = false;
     }
-
+//so the mouse knows when it is inside a rectangle
     mouseDetection() {
         if (dragging === true){
             if (mouseX >= this.x && 
@@ -64,23 +85,7 @@ class Car {
             }
         }
     }
-
-    collisionDetection() {
-        if (this.isSelected === true){
-            for (let i = 0; i < cars.length; i++) {
-                if(this.x < cars[i].x + cars[i].width ||
-                    this.x + this.width > cars[i].x ||
-                    this.y < cars[i].y + cars[i].height ||
-                    this.y + this.height > cars[i].y)
-                    {
-                this.isColliding = true;
-                } else {
-                    this.isColliding = false;
-                }
-            }
-        }
-    }
-    
+//this method draws the cars
     draw(){
         //saves the current state of the canvas code
         fctx.save();
@@ -93,11 +98,22 @@ class Car {
         //restore cars
         fctx.restore();    
     }
-    get topSide() {return this.y};
-    get leftSide() {return this.x};
-    get bottomSide() {return this.x + this.width};
-    get topSide() {return this.y + this.height};
+//attempts at detecting distance. Still not working. 
+    distance() {
+        for (let i = 0; i < cars.length; i++){
+            var a = this.x - cars[i].x;
+            var b = this.y - cars[i].y;
+            var dist = Math.sqrt( a*a + b*b );
+            if (dist < 100){
+            this.isColliding = true;
+            } else {
+            this.isColliding = false;
+            }
+        }
+    }
 };
+
+/*----- functions -----*/
 
 function init(){
             
@@ -118,8 +134,7 @@ function init(){
     
 };
 
-/*----- functions -----*/
-
+//when a car is clicked, starts mouseDetection method of cars
 function selectCar() {
     dragging = true;
     for (let i = 0; i < cars.length; i++){
@@ -153,14 +168,6 @@ function mouseTrack(evt) {
             } else if (c.y + c.height > 600) {
                 c.y = 580 - c.height;
             };
-        }
-    }
-    if(dragging){
-        for (let i = 0; i < cars.length; i++){
-        cars[i].collisionDetection();
-            if (cars[i].isColliding === true){
-            console.log('collision');
-            }
         }
     }
 };
@@ -212,6 +219,7 @@ function createGrid() {
     ctx.lineTo(600, 100);
     ctx.moveTo(0, 200);
     ctx.lineTo(600, 200);
+    ctx.closePath();
     ctx.moveTo(600, 300);
     ctx.lineTo(0, 300);
     ctx.moveTo(600, 400);
@@ -234,10 +242,12 @@ function createGrid() {
     ctx.lineTo(500, 600)
     ctx.stroke();
 
-
+    //a "special" path to highlight the goal path
+    var img = document.getElementById("arrow");
+    ctx.drawImage(img, 0, 200);
 };
 
-//renders the game 
+//renders the game continuously 
 function update() {
     fctx.clearRect(0, 0, 600, 600)
     //draw the cars 
@@ -245,27 +255,6 @@ function update() {
         cars[i].draw()
     };
     requestAnimationFrame(update);
-
-//some logic for collision detection
-    // if (c.position.x < 0) {
-    //     c.position = 0;
-    // };
-    // if (c.position.x + c.width > CANVAS_WIDTH) {
-    //     c.position = 0;
-    // }
-
-    // };
-    // requestAnimationFrame();
 };
-
-// function carCollision() {
-//     for (let i = 0; i < cars.length; i++){
-//         if (cars[i].isSelected === true) {
-//             if(cars[i].rightSide > this.leftSide || cars[i].leftSide < this.rightSide || cars[i].bottomSide > this.topSide || cars[i].topSide < this.bottomSide){
-//         console.log('collision detected')
-//         }
-//         }
-//     }
-// };
 
 init();

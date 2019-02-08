@@ -1,0 +1,19 @@
+//1. Render a board, blocks, a red block and an "escape" point in front of red car. 
+    // establish render method for cars
+    //once render() format is known, put update function into requestAnimationFrame()
+    // draw() is in update() is in requestAnimation
+    //call requestAnimationFrame inside of init()
+    //call requestAnimationFrame 2x: in init to know the origin points, and when on a loop. 
+//Traffic Jam
+//2. Blocks can be move on x and y axis
+    //figure out where the mouse is and how far it has traveled
+    //How to get area of cars?
+    //if mouse's x is > car's x + width (ish?)
+//3. Blocks can be dragged by mouse 
+    // figure out and know when the mouse is inside of a car
+    //
+//4. The game is winnable: player can get the red car to the escape point and know they won
+//5. The game runs a timer?
+//6. The game counts moves. 
+//7. The game includes at least one level, but potentially can include more levels that can be easily rendered
+//8. The game lets the player know when they have won!

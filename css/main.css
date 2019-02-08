@@ -4,6 +4,7 @@ body {
     margin: 0;
     text-align: center;
     background-image: url("https://i.pinimg.com/originals/06/0b/1f/060b1f5585c9e45cded88d0b7ac3fad6.jpg");
+    font-size: 20px;
 }
 .game-wrapper {
     display: grid;
@@ -19,6 +20,7 @@ aside {
     padding: 5px;
     height: 400px;
     margin-top: 10px;
+    margin-right: -100px;
 }
 
 header {
@@ -51,6 +53,13 @@ h2 {
 }
 
 .boardWrapper {
-    text-align: center;
     grid-area: game;
+}
+
+button {
+    padding: 10;
+    background: #FFAA00;
+    color: #170931;
+    margin: 10px;
+    border: 1px solid #170931;
 }

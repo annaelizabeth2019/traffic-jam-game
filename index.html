@@ -15,10 +15,22 @@
         <h2>A logic puzzle for kids ages 5 and up</h2>
     </header>
     <div class="game-wrapper">
-        <aside><p><b>Instructions:</b> <br>See if you can get the red car to the other side of the traffic jam! You can only move to <b>free</b> spaces. <br> About this puzzle: The minimum number of moves required to solve this map is <b>50</b>.</b></p></aside>
+        <aside><p><b>Instructions:</b> <br>See if you can get the red car to the other side of the traffic jam! You can only move to <b>free</b> spaces. <br> About this puzzle: The minimum number of moves required to solve this map is <b>50</b>.</b>
+            <br>Try using the timer at the bottom of the puzzle to see how quickly you can solve Traffic Jam!</p></aside>
         <div class="board-wrapper">
             <canvas id="frontCanvas" width="600" height="600"></canvas>
             <canvas id="canvas" width="600" height="600"></canvas>
+            <div style="display:none;">
+                <img id="arrow"
+                     src="images/arrow.png"
+                     width="600" height="100">
+              </div>
+            <button onclick='init()'>reset</button>
+            <div id="timer"></div>
+            <button onclick='start()'>start</button>
+            <button onclick='pause()'>pause</button>
+            <button onclick='cont()'>resume</button>
+            <button onclick='stop()'>stop</button>
         </div>
     </div>
 </body>
