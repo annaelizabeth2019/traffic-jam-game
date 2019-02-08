@@ -40,7 +40,6 @@ let stop = () => {
   this.session = true;
 };
 
-
 /*----- constants -----*/ 
 
 const canvas = document.getElementById("canvas");
@@ -50,15 +49,6 @@ var fctx = frontCanvas.getContext("2d");
 const CANVAS_WIDTH = frontCanvas.width;
 const CANVAS_HEIGHT = frontCanvas.height;
 
-/*----- app's state (variables) -----*/ 
-
-//dragging detection
-let dragging = false;
-let mouseX, mouseY;
-//variables for cars
-let redCar, car1, car2, car3, car4, car5, car6, car7, car8, car9, bus1, bus2;
-//this array holds the cars
-let cars = [];
 //Car class holds information about each car
 class Car {
     constructor(originX, originY, carWidth, carHeight, orientation, color){
@@ -112,6 +102,17 @@ class Car {
         }
     }
 };
+
+/*----- app's state (variables) -----*/ 
+
+//dragging detection
+let dragging = false;
+let mouseX, mouseY;
+//variables for cars
+let redCar, car1, car2, car3, car4, car5, car6, car7, car8, car9, bus1, bus2;
+//this array holds the cars
+let cars = [];
+
 
 /*----- functions -----*/
 
