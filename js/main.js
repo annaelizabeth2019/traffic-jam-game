@@ -157,8 +157,8 @@ function mouseTrack(evt) {
             //collision detection on the canvas
             if (c.x < 0){
                 c.x =0;
-            } else if (c.x + c.width > 600) {
-                c.x = 580 - c.width;
+            } else if (c.x + c.width > frontCanvas.width) {
+                c.x = frontCanvas.width - c.width; //580 = canvas size - padding
             };
             //vertically aligned car logic
         } else if (dragging && c.isSelected && c.position === 'v'){
@@ -166,8 +166,8 @@ function mouseTrack(evt) {
             //collision detection on the y-axis of the canvas
             if (c.y < 0){
                 c.y = 0;
-            } else if (c.y + c.height > 600) {
-                c.y = 580 - c.height;
+            } else if (c.y + c.height > frontCanvas.height) {
+                c.y = frontCanvas.height - c.height;
             };
         }
     }
